@@ -1,0 +1,35 @@
+f = open('input.txt', 'rU')
+list = []
+for line in f:  ## iterates over the lines of the file
+    #print line,
+
+    # get input from file
+    input = line.strip('\n')
+
+    new = [int(x) for x in input.split('\t')]
+
+    #print 'next input: ', new
+
+    list.append(new)
+
+
+
+#print list
+
+
+def find_Quotient(j):
+    quotient = 0
+
+    for i in range(len(j)-1):
+        for k in range(i+1,len(j)):
+            if j[i] % j[k] == 0:
+                return j[i]/j[k]
+            if j[k] % j[i] == 0:
+                return j[k]/j[i]
+
+sum = 0
+
+for j in list:
+    sum += find_Quotient(j)
+
+print sum

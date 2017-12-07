@@ -1,0 +1,223 @@
+import math
+
+#inp = 23
+
+numbers = {1: 1, 2: 1, 3: 2, 4: 4, 5: 5, 6: 10, 7: 11, 8: 23, 9: 25, 10: 26, 11: 54}
+
+squares = [x ** 2 for x in range(1, 600, 2)]
+
+
+# print squares
+
+# find what "level" its on
+def get_level(input):
+    start = 0
+    finish = 0
+
+    for i in range(len(squares)):
+        if squares[i] < input and squares[i + 1] >= input:
+            start = squares[i]
+            finish = squares[i + 1]
+
+    # print start, finish
+
+    difference = finish - start
+    # print 'difference: ', difference
+    level = difference / 8  # moves from middle to center
+    return level
+
+
+# get the corners of the levels
+def get_corners(level):
+    if level == 0:
+        return [1, 1, 1, 1]
+    corners = []
+    start = squares[level - 1] + 1
+    finish = squares[level]
+    difference = (finish - (start - 1)) / 4
+    # print 'start: ', start, ' finish:', finish, ' difference: ', difference
+    for i in range(1, 5):
+        corners.append((start - 1) + difference * i)
+    return corners
+
+
+# calculate value for location in spirl
+def get_value(inp, corners, level):
+    '''
+    :param inp: location to calculate in spiral
+    :param corners: value of the corners of this level
+    :param level: level within spiral
+    :return: value for new location in new spiral
+    '''
+    # calculate this levels base difference between levels
+    # 2 11 has difference of 9, top will be 11, left 13, bottom 15
+    dif = squares[level - 1] + 2 - (squares[level - 2] + 1)
+    print 'dif', dif
+    if inp in corners:
+        #print 'its a corner!'
+        loc = corners.index(inp)
+        #print 'loc', loc
+        value = numbers[get_corners(level - 1)[loc]] + numbers.get(inp - 1)
+        #print 'corners',get_corners(level - 1)[loc]
+        #print 'value', value
+        numbers[inp] = value
+        if loc == 3:
+            numbers[inp] += numbers[(squares[level - 1] + 1)]
+            # print 'sq l: ',squares[level-1] + 1
+
+    elif inp < corners[0]:  # right edge...
+        # location is first in new "level"
+        if inp == squares[level - 1] + 1:
+            # inp - (dif - 1) gives up left diagonal
+            value = numbers[inp - (dif - 1)] + numbers[inp - 1]  # first in new level next to square number
+            numbers[inp] = value
+            # print 'value', value
+        # location is one less than top right corner
+        elif inp == corners[0] - 1:
+            value = numbers[inp - dif] + numbers[inp - (dif + 1)] + numbers[inp - 1]
+            numbers[inp] = value
+        # its bottom left diagonal will be the square of previous level
+        elif inp == squares[level - 1] + 2:
+            value = numbers[inp - 1] + numbers[inp - 2] + numbers[inp - dif] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+        else:  # starting on level 3 there will be middles with 4 neighbors
+            value = numbers[inp - 1] + numbers[inp - dif] + numbers[inp - (dif + 1)] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+    # top row of a level
+    elif inp < corners[1]:
+        dif += 2
+        if inp == corners[0] + 1:
+            value = numbers[inp - 1] + numbers[inp - 2] + numbers[inp - dif] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+        elif inp == corners[1] - 1:
+            value = numbers[inp - 1] + numbers[inp - dif] + numbers[inp - (dif + 1)]
+            numbers[inp] = value
+        else:
+            value = numbers[inp - 1] + numbers[inp - dif] + numbers[inp - (dif + 1)] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+    #left side
+    elif inp < corners[2]:
+        dif += 4
+        if inp == corners[1] + 1:
+            value = numbers[inp - 1] + numbers[inp - 2] + numbers[inp - dif] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+        elif inp == corners[2] - 1:
+            value = numbers[inp - 1] + numbers[inp - dif] + numbers[inp - (dif + 1)]
+            numbers[inp] = value
+        else:
+            value = numbers[inp - 1] + numbers[inp - dif] + numbers[inp - (dif + 1)] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+    elif inp < corners[3]:
+        dif += 6
+        if inp == corners[2] + 1:
+            value = numbers[inp - 1] + numbers[inp - 2] + numbers[inp - dif] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+        elif inp == corners[3] - 1:
+            value = numbers[inp - 1] + numbers[inp - dif] + numbers[inp - (dif + 1)] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+        else:
+            value = numbers[inp - 1] + numbers[inp - dif] + numbers[inp - (dif + 1)] + numbers[inp - (dif - 1)]
+            numbers[inp] = value
+
+'''
+print 'input: ', inp
+level = get_level(inp)
+print 'level: ', level
+corners = get_corners(level)
+print corners
+print 'squares', squares
+get_value(inp, corners, level)
+
+print numbers
+
+
+for i in range(22,25):
+    print 'input: ', i
+    level = get_level(i)
+    print 'level: ', level
+    corners = get_corners(level)
+    #print corners
+    #print 'squares', squares
+    get_value(i, corners, level)
+
+    print numbers
+'''
+
+goal = 277678
+
+i = 12
+current = 747
+
+while current < goal:
+    level = get_level(i)
+    corners = get_corners(level)
+    get_value(i, corners, level)
+
+    current = numbers[i]
+    i += 1
+
+print current
+
+'''
+
+for i in range(9,30):
+    level = get_level(i)
+    corners = get_corners(level)
+    get_value(i,corners,level)
+
+print numbers
+'''
+'''
+inp = 13
+print 'input: ',inp
+level = get_level(inp)
+print 'level: ',level
+print get_corners(level)
+
+
+inp = 33
+print 'input: ',inp
+level = get_level(inp)
+print 'level: ',level
+print get_corners(level)
+
+'''
+
+'''
+squares = [x**2 for x in range (1,600,2)]
+print squares
+
+start = 0
+finish = 0
+
+for i in range(len(squares)):
+    if squares[i] < input and squares[i+1] > input:
+        start = squares[i]
+        finish = squares[i+1]
+
+print start, finish
+
+difference = finish-start
+print 'difference: ', difference
+level = difference / 8 #moves from middle to center
+
+midpoints = []
+
+for i in range(1,8,2):
+    midpoints.append(start+level*i)
+
+print 'midpoints: ', midpoints
+
+distances_to_midpoints = []
+
+for i in midpoints:
+    distances_to_midpoints.append(abs(i-input))
+
+print 'distances_to_midpoints', distances_to_midpoints
+
+smallest = min(distances_to_midpoints)
+
+print 'smallest: ', smallest
+
+print 'solution: ', smallest + level
+'''

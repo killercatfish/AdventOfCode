@@ -1,0 +1,32 @@
+f = open('input.txt', 'rU')
+list = []
+for line in f:  ## iterates over the lines of the file
+    print line,
+
+    # get input from file
+    input = line.strip('\n')
+
+    new = [int(x) for x in input.split('\t')]
+
+    print 'next input: ', new
+
+    list.append(new)
+
+#print list
+sum = 0
+
+for j in list:
+
+    smallest = j[0]
+    largest = j[0]
+
+    for i in range(len(j)):
+        if j[i] > largest:
+            largest = j[i]
+        if j[i] < smallest:
+            smallest = j[i]
+    difference = largest-smallest
+    print 'largest: ', largest, ', smallest: ', smallest, ', difference: ', difference
+    sum += difference
+
+print 'The checksum = ', sum
