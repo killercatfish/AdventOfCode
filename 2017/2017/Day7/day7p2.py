@@ -1,5 +1,6 @@
-from anytree import Node, RenderTree, NodeMixin
-f = open('sample_input.txt', 'rU')
+from anytree import Node, RenderTree, NodeMixin #https://goo.gl/Ta82Qs
+from anytree.exporter import DotExporter
+f = open('input.txt', 'rU')
 input = []
 for line in f:   ## iterates over the lines of the file
 	#print line,
@@ -47,7 +48,7 @@ for i in input:
         #print test.ABOVE
     #print test
 
-#set parents of nodes
+#set parents of nodes https://goo.gl/q6NoeS
 for i in input:
     current = i.split(" ")
     #print current
@@ -84,7 +85,14 @@ for i in discs.keys():
         #print 'hello'
         nodes[i].parent = nodes[discs[i].BELOW]
 
-print RenderTree(nodes[first])
+#print RenderTree(nodes[first])
+
+for pre, fill, node in RenderTree(nodes[first]):
+    print("%s%s" % (pre,node.name))
+
+#exported to dot file: https://goo.gl/okYF9g
+#used this viewer: http://www.webgraphviz.com/
+DotExporter(nodes[first]).to_dotfile("tree.dot")
 
 '''
 print discs[first]
